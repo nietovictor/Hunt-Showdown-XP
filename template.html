@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hunt: Showdown - Calculadora Oficial de XP, Niveles y Hunt Dollars</title>
+    <title>Hunt: Showdown 1896 XP Calculator</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- FontAwesome Icons -->
@@ -49,10 +49,115 @@
             background-image: radial-gradient(circle at 50% 0%, #1e150f 0%, #080808 75%);
             color: #d8d3c5;
             font-family: 'Montserrat', sans-serif;
+            font-size: 16px;
             min-height: 100vh;
         }
 
         .font-cinzel { font-family: 'Cinzel', serif; }
+
+        .text-xs { font-size: 0.9rem !important; }
+        .text-\[10px\] { font-size: 0.78rem !important; }
+        .text-\[11px\] { font-size: 0.84rem !important; }
+
+        /* Dense layout: keep controls readable while reducing unused space. */
+        .hunt-card-header.p-4 {
+            padding: 0.65rem 0.8rem !important;
+        }
+        .hunt-box > .p-4 {
+            padding: 0.65rem !important;
+        }
+        .hunt-box .p-4.pt-0 {
+            padding: 0 0.65rem 0.65rem !important;
+        }
+        .hunt-box .p-3 {
+            padding: 0.6rem !important;
+        }
+        .hunt-box .p-2\.5 {
+            padding: 0.5rem !important;
+        }
+        .hunt-box .gap-4 {
+            gap: 0.6rem !important;
+        }
+        .hunt-box .gap-3 {
+            gap: 0.5rem !important;
+        }
+        .hunt-box .space-y-4 {
+            row-gap: 0.6rem !important;
+        }
+        .hunt-box .space-y-3 {
+            row-gap: 0.5rem !important;
+        }
+        .hunt-box .h-4 {
+            height: 0.8rem !important;
+        }
+
+        @media (min-width: 768px) {
+            #mapEnvelopesSection {
+                max-width: 42rem;
+            }
+            #mapEnvelopesSection > .p-4 {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+            #bountyHuntControls,
+            #soulSurvivorControls {
+                row-gap: 0.7rem !important;
+            }
+            #bountyHuntControls > * {
+                margin-top: 0 !important;
+            }
+        }
+
+        @media (min-width: 768px) {
+            #bountyHuntControls {
+                display: grid;
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+                column-gap: 0.7rem;
+                align-items: start;
+            }
+            #bountyHuntControls > section:nth-child(1),
+            #bountyHuntControls > section:nth-child(2) {
+                height: 100%;
+            }
+            #bountyHuntControls > section:nth-child(3) {
+                grid-column: 1 / -1;
+            }
+        }
+
+        @media (min-width: 1100px) {
+            #controlsColumn {
+                display: grid;
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+                gap: 0.7rem;
+                align-items: start;
+            }
+            #controlsColumn > * {
+                margin-top: 0 !important;
+            }
+            #levelSection,
+            #aiSection,
+            #resetSection,
+            #soulSurvivorControls {
+                grid-column: 1 / -1;
+            }
+            #mapEnvelopesSection,
+            #tokenExtractionSection {
+                width: 100%;
+                max-width: none;
+            }
+            #tokenExtractionSection,
+            #investigationSection,
+            #aiSection {
+                height: 100%;
+            }
+            #bountyHuntControls {
+                display: contents;
+            }
+            #mapEnvelopesSection { grid-column: 1 / -1; grid-row: 2; }
+            #bountyHuntControls > #tokenExtractionSection { grid-column: 1; grid-row: 3; }
+            #investigationSection { grid-column: 2; grid-row: 3; }
+            #hunterActionsSection { grid-column: 1; grid-row: 4; }
+            #aiSection { grid-column: 2; grid-row: 4; }
+        }
 
         ::-webkit-scrollbar { width: 8px; }
         ::-webkit-scrollbar-track { background: #0a0a0a; }
@@ -103,26 +208,25 @@
         }
     </style>
 </head>
-<body class="p-3 md:p-6 pb-20">
+<body class="p-2 md:p-3 pb-8">
 
     <!-- HEADER / BANNER -->
-    <header class="max-w-6xl mx-auto mb-6 text-center">
-        <h1 class="text-3xl md:text-5xl font-extrabold font-cinzel tracking-widest text-hunt-gold uppercase drop-shadow-md border-b-2 border-hunt-gold/30 pb-2 inline-block">
-            Hunt: Showdown
-        </h1>
-        <p class="text-xs md:text-sm font-cinzel tracking-widest text-hunt-muted mt-2 uppercase">
-            Calculadora de XP, Progresión de Niveles y Hunt Dollars (1 BP = 4 XP + $1 HD)
-        </p>
-
+    <header class="max-w-[1800px] mx-auto mb-4 text-center relative">
         <!-- LANGUAGE TOGGLE -->
-        <div class="flex justify-center items-center gap-2 mt-4" role="group" aria-label="Selector de idioma">
-            <span class="text-xs font-mono text-hunt-muted">Idioma / Language:</span>
-            <button id="btnSpanish" onclick="setLanguage('es')" class="language-btn active px-3 py-1 rounded text-xs border border-hunt-borderHighlight transition">ES</button>
-            <button id="btnEnglish" onclick="setLanguage('en')" class="language-btn px-3 py-1 rounded text-xs border border-hunt-borderHighlight transition">EN</button>
+        <div class="absolute top-0 right-0 flex items-center gap-1" role="group" aria-label="Selector de idioma">
+            <button id="btnSpanish" onclick="setLanguage('es')" class="language-btn active px-2 py-1 rounded text-xs border border-hunt-borderHighlight transition" aria-label="Español">ES</button>
+            <button id="btnEnglish" onclick="setLanguage('en')" class="language-btn px-2 py-1 rounded text-xs border border-hunt-borderHighlight transition" aria-label="English">EN</button>
         </div>
 
+        <h1 class="text-3xl md:text-5xl font-extrabold font-cinzel tracking-widest text-hunt-gold uppercase drop-shadow-md border-b-2 border-hunt-gold/30 pb-2 inline-block">
+            Hunt: Showdown 1896
+        </h1>
+        <p class="text-xs md:text-sm font-cinzel tracking-widest text-hunt-muted mt-2 uppercase">
+            Calculadora de XP, Progresión de Niveles y Hunt Dollars
+        </p>
+
         <!-- MODE SELECTOR TOGGLE -->
-        <div class="flex justify-center items-center gap-3 mt-6">
+        <div class="flex justify-center items-center gap-3 mt-3">
             <button id="btnBountyHunt" onclick="setGameMode('bounty')" class="mode-btn active px-5 py-2.5 rounded font-cinzel text-sm border border-hunt-borderHighlight transition flex items-center gap-2">
                 <i class="fa-solid fa-crosshairs"></i> Bounty Hunt
             </button>
@@ -133,23 +237,23 @@
     </header>
 
     <!-- MAIN CONTAINER -->
-    <main class="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-6">
+    <main class="max-w-[1800px] mx-auto grid grid-cols-1 md:grid-cols-12 gap-4">
 
         <!-- LEFT COLUMN: CONTROLS & CATEGORIES (8 cols) -->
-        <div class="lg:col-span-8 space-y-6">
+        <div id="controlsColumn" class="md:col-span-9 space-y-4">
 
             <!-- HUNTER LEVEL PROGRESSION CALCULATOR SECTION -->
-            <section class="hunt-box rounded-lg overflow-hidden border-2 border-hunt-gold/40">
+            <section id="levelSection" class="hunt-box rounded-lg overflow-hidden border-2 border-hunt-gold/40">
                 <div class="hunt-card-header p-4 flex items-center justify-between bg-hunt-darkGold/20">
                     <h2 class="font-cinzel text-lg md:text-xl font-bold text-hunt-gold flex items-center gap-2">
-                        <i class="fa-solid fa-graduation-cap text-hunt-gold"></i> Progreso de Nivel del Cazador
+                        <i class="fa-solid fa-graduation-cap text-hunt-gold"></i> Progreso de nivel del cazador
                     </h2>
                     <span class="text-xs text-hunt-muted font-mono uppercase">Hunter Leveling</span>
                 </div>
                 <div class="p-4 space-y-4">
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 items-center">
                         <div class="bg-hunt-card p-3 rounded border border-hunt-border">
-                            <label class="font-semibold text-xs text-hunt-text block mb-1">Nivel Inicial antes de la Partida:</label>
+                            <label class="font-semibold text-xs text-hunt-text block mb-1">Nivel inicial antes de la partida:</label>
                             <div class="flex items-center gap-2">
                                 <span class="text-xs font-mono text-hunt-muted">Nivel:</span>
                                 <input type="number" id="startLevel" value="1" min="1" max="49" onchange="calculateAll()" oninput="calculateAll()" class="w-20 text-center bg-black/80 border border-hunt-gold rounded py-1 font-bold text-sm text-hunt-gold">
@@ -163,7 +267,7 @@
                                 <span id="levelProjectionText" class="font-bold text-hunt-gold font-cinzel">Nivel 1 → Nivel 1</span>
                             </div>
                             <div class="flex justify-between items-center text-xs">
-                                <span class="text-hunt-muted font-mono">Falta para Nivel 50:</span>
+                                <span class="text-hunt-muted font-mono">Falta para nivel 50:</span>
                                 <span id="xpRemainingTo50Text" class="font-mono text-hunt-text">21,100 XP</span>
                             </div>
                         </div>
@@ -172,7 +276,7 @@
                     <!-- Visual Progress Bar -->
                     <div class="bg-black/80 p-3 rounded border border-hunt-border">
                         <div class="flex justify-between text-xs font-mono mb-1">
-                            <span class="text-hunt-muted">Progreso al Nivel 50 (21,100 XP Total)</span>
+                            <span class="text-hunt-muted">Progreso al nivel 50 (21,100 XP total)</span>
                             <span id="levelProgressPct" class="text-hunt-gold font-bold">0%</span>
                         </div>
                         <div class="w-full bg-hunt-card rounded-full h-4 overflow-hidden border border-hunt-border relative">
@@ -180,51 +284,21 @@
                         </div>
                     </div>
 
-                    <!-- XP Requirements Quick Reference Table -->
-                    <div class="bg-hunt-card/60 p-3 rounded border border-hunt-border">
-                        <span class="text-xs font-semibold text-hunt-gold block mb-2 font-cinzel"><i class="fa-solid fa-list-ol mr-1"></i> Tabla de Requisitos de XP por Nivel:</span>
-                        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-2 text-center text-[11px]">
-                            <div class="bg-black/40 p-1.5 rounded border border-hunt-border/50">
-                                <div class="text-hunt-muted font-mono">Lvls 2-3</div>
-                                <div class="font-bold text-hunt-text">100 XP / lvl</div>
-                            </div>
-                            <div class="bg-black/40 p-1.5 rounded border border-hunt-border/50">
-                                <div class="text-hunt-muted font-mono">Lvls 4-7</div>
-                                <div class="font-bold text-hunt-text">200 XP / lvl</div>
-                            </div>
-                            <div class="bg-black/40 p-1.5 rounded border border-hunt-border/50">
-                                <div class="text-hunt-muted font-mono">Lvls 8-18</div>
-                                <div class="font-bold text-hunt-text">300 XP / lvl</div>
-                            </div>
-                            <div class="bg-black/40 p-1.5 rounded border border-hunt-border/50">
-                                <div class="text-hunt-muted font-mono">Lvls 19-25</div>
-                                <div class="font-bold text-hunt-text">400 XP / lvl</div>
-                            </div>
-                            <div class="bg-black/40 p-1.5 rounded border border-hunt-border/50">
-                                <div class="text-hunt-muted font-mono">Lvls 26-35</div>
-                                <div class="font-bold text-hunt-text">500 XP / lvl</div>
-                            </div>
-                            <div class="bg-black/40 p-1.5 rounded border border-hunt-border/50">
-                                <div class="text-hunt-muted font-mono">Lvls 36-50</div>
-                                <div class="font-bold text-hunt-text">600 XP / lvl</div>
-                            </div>
-                        </div>
-                    </div>
                 </div>
             </section>
 
             <!-- MAP XP ENVELOPES & POSTERS -->
-            <section class="hunt-box rounded-lg overflow-hidden">
+            <section id="mapEnvelopesSection" class="hunt-box rounded-lg overflow-hidden">
                 <div class="hunt-card-header p-4 flex items-center justify-between">
                     <h2 class="font-cinzel text-lg md:text-xl font-bold text-hunt-gold flex items-center gap-2">
-                        <i class="fa-solid fa-envelope text-yellow-600"></i> Sobres de XP del Mapa (Envelopes)
+                        <i class="fa-solid fa-envelope text-yellow-600"></i> Sobres de XP del mapa
                     </h2>
-                    <span class="text-xs text-hunt-muted font-mono uppercase">Map Collectibles</span>
+                    <span class="text-xs text-hunt-muted font-mono uppercase">Coleccionables</span>
                 </div>
                 <div class="p-4 grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <div class="bg-hunt-card p-3 rounded border border-hunt-border flex justify-between items-center">
                         <div>
-                            <div class="font-semibold text-xs">Sobre de XP Gratuito</div>
+                            <div class="font-semibold text-xs">Sobre de XP gratuito</div>
                             <div class="text-[10px] text-hunt-gold">+500 XP cada uno</div>
                         </div>
                         <div class="flex items-center gap-2">
@@ -236,7 +310,7 @@
 
                     <div class="bg-hunt-card p-3 rounded border border-hunt-border flex justify-between items-center">
                         <div>
-                            <div class="font-semibold text-xs">Sobre de Evento / Marcas de cazador</div>
+                            <div class="font-semibold text-xs">Sobre con marcas de cazador</div>
                             <div class="text-[10px] text-hunt-gold">+2,000 XP cada uno</div>
                         </div>
                         <div class="flex items-center gap-2">
@@ -249,15 +323,15 @@
             </section>
 
             <!-- MODE 1: BOUNTY HUNT CONTROLS -->
-            <div id="bountyHuntControls" class="space-y-6">
+            <div id="bountyHuntControls" class="space-y-4">
 
                 <!-- 1. HUNTER KILLS & TEAM ACTIONS -->
-                <section class="hunt-box rounded-lg overflow-hidden">
+                <section id="hunterActionsSection" class="hunt-box rounded-lg overflow-hidden">
                     <div class="hunt-card-header p-4 flex items-center justify-between">
                         <h2 class="font-cinzel text-lg md:text-xl font-bold text-hunt-gold flex items-center gap-2">
-                            <i class="fa-solid fa-skull-crossbones text-hunt-red"></i> Cazadores Enemigos & Equipo
+                            <i class="fa-solid fa-skull-crossbones text-hunt-red"></i> Cazadores enemigos & equipo
                         </h2>
-                        <span class="text-xs text-hunt-muted font-mono uppercase">Hunter Kills</span>
+                        <span class="text-xs text-hunt-muted font-mono uppercase">Bajas</span>
                     </div>
                     <div class="p-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
                         <script>
@@ -315,18 +389,18 @@
                 </section>
 
                 <!-- 2. INVESTIGATION & BOSS MAP ACTIONS -->
-                <section class="hunt-box rounded-lg overflow-hidden">
+                <section id="investigationSection" class="hunt-box rounded-lg overflow-hidden">
                     <div class="hunt-card-header p-4 flex items-center justify-between">
                         <h2 class="font-cinzel text-lg md:text-xl font-bold text-hunt-gold flex items-center gap-2">
-                            <i class="fa-solid fa-compass text-hunt-gold"></i> Pistas y Guaridas de Jefes
+                            <i class="fa-solid fa-compass text-hunt-gold"></i> Pistas y guaridas de jefes
                         </h2>
                         <span class="text-xs text-hunt-muted font-mono uppercase">Investigation</span>
                     </div>
                     <div class="p-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
                         <div class="bg-hunt-card p-3 rounded border border-hunt-border flex flex-col justify-between">
                             <div class="mb-2">
-                                <div class="font-semibold text-xs">Pista recogida (Clue)</div>
-                                <div class="text-[10px] text-hunt-muted">50 BP (200 XP + $50)</div>
+                                <div class="font-semibold text-xs">Pista recogida</div>
+                                <div class="text-[10px] text-hunt-gold">50 BP (200 XP + $50)</div>
                             </div>
                             <div class="flex items-center justify-between">
                                 <button onclick="changeVal('cluesBH', -1)" class="btn-counter w-7 h-7 rounded bg-hunt-border font-bold text-xs">-</button>
@@ -337,8 +411,8 @@
 
                         <div class="bg-hunt-card p-3 rounded border border-hunt-border flex flex-col justify-between">
                             <div class="mb-2">
-                                <div class="font-semibold text-xs">Guarida Localizada (Lair)</div>
-                                <div class="text-[10px] text-hunt-muted">25 BP (100 XP + $25)</div>
+                                <div class="font-semibold text-xs">Guarida localizada</div>
+                                <div class="text-[10px] text-hunt-gold">25 BP (100 XP + $25)</div>
                             </div>
                             <div class="flex items-center justify-between">
                                 <button onclick="changeVal('lairsFound', -1)" class="btn-counter w-7 h-7 rounded bg-hunt-border font-bold text-xs">-</button>
@@ -349,8 +423,8 @@
 
                         <div class="bg-hunt-card p-3 rounded border border-hunt-border flex flex-col justify-between">
                             <div class="mb-2">
-                                <div class="font-semibold text-xs">Jefe Derrotado (Boss Kill)</div>
-                                <div class="text-[10px] text-hunt-muted">100 BP (400 XP + $100)</div>
+                                <div class="font-semibold text-xs">Jefe derrotado</div>
+                                <div class="text-[10px] text-hunt-gold">100 BP (400 XP + $100)</div>
                             </div>
                             <div class="flex items-center justify-between">
                                 <button onclick="changeVal('bossKillsBH', -1)" class="btn-counter w-7 h-7 rounded bg-hunt-border font-bold text-xs">-</button>
@@ -361,8 +435,8 @@
 
                         <div class="bg-hunt-card p-3 rounded border border-hunt-border flex flex-col justify-between">
                             <div class="mb-2">
-                                <div class="font-semibold text-xs">Banish de Jefe</div>
-                                <div class="text-[10px] text-hunt-muted">+350 XP</div>
+                                <div class="font-semibold text-xs">Desterrar jefe</div>
+                                <div class="text-[10px] text-hunt-gold">+350 XP</div>
                             </div>
                             <div class="flex items-center justify-between">
                                 <button onclick="changeVal('banishes', -1)" class="btn-counter w-7 h-7 rounded bg-hunt-border font-bold text-xs">-</button>
@@ -374,7 +448,7 @@
                         <div class="bg-hunt-card p-3 rounded border border-hunt-border flex flex-col justify-between">
                             <div class="mb-2">
                                 <div class="font-semibold text-xs">Clean Sweep (Kill/Banish/Extract)</div>
-                                <div class="text-[10px] text-hunt-muted">25 BP (100 XP + $25)</div>
+                                <div class="text-[10px] text-hunt-gold">25 BP (100 XP + $25)</div>
                             </div>
                             <div class="flex items-center justify-between">
                                 <button onclick="changeVal('cleanSweeps', -1)" class="btn-counter w-7 h-7 rounded bg-hunt-border font-bold text-xs">-</button>
@@ -385,8 +459,8 @@
 
                         <div class="bg-hunt-card p-3 rounded border border-hunt-border flex items-center justify-between col-span-1 sm:col-span-2 lg:col-span-1">
                             <div>
-                                <span class="font-semibold text-xs block">Solo Boss Kill Bonus</span>
-                                <span class="text-[10px] text-hunt-muted">+100 BP (+400 XP + $100)</span>
+                                <span class="font-semibold text-xs block">Bonus por derrotar al jefe en solitario</span>
+                                <span class="text-[10px] text-hunt-gold">+100 BP (+400 XP + $100)</span>
                             </div>
                             <input type="checkbox" id="soloBossKill" onchange="calculateAll()" class="w-5 h-5 accent-hunt-gold rounded">
                         </div>
@@ -394,10 +468,10 @@
                 </section>
 
                 <!-- 3. BOUNTY TOKEN EXTRACTION -->
-                <section class="hunt-box rounded-lg overflow-hidden">
+                <section id="tokenExtractionSection" class="hunt-box rounded-lg overflow-hidden">
                     <div class="hunt-card-header p-4 flex items-center justify-between">
                         <h2 class="font-cinzel text-lg md:text-xl font-bold text-hunt-gold flex items-center gap-2">
-                            <i class="fa-solid fa-gem text-yellow-500"></i> Extracción de Fichas (Bounty Tokens)
+                            <i class="fa-solid fa-gem text-yellow-500"></i> Extracción de Fichas
                         </h2>
                         <span class="text-xs text-hunt-muted font-mono uppercase">Tokens Extracted</span>
                     </div>
@@ -405,8 +479,8 @@
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                             <div class="bg-hunt-card p-3 rounded border border-hunt-border flex justify-between items-center">
                                 <div>
-                                    <div class="font-semibold text-xs">Fichas de 1 Jefe (Match)</div>
-                                    <div class="text-[10px] text-hunt-muted">150 BP/ficha (600 XP + $150)</div>
+                                    <div class="font-semibold text-xs">Fichas de 1 jefe</div>
+                                    <div class="text-[10px] text-hunt-gold">150 BP/ficha (600 XP + $150)</div>
                                 </div>
                                 <div class="flex items-center gap-2">
                                     <button onclick="changeVal('token1Boss', -1)" class="btn-counter w-7 h-7 rounded bg-hunt-border font-bold text-xs">-</button>
@@ -417,8 +491,8 @@
 
                             <div class="bg-hunt-card p-3 rounded border border-hunt-border flex justify-between items-center">
                                 <div>
-                                    <div class="font-semibold text-xs">Fichas de Bocarrucha</div>
-                                    <div class="text-[10px] text-hunt-muted">100 BP/ficha (400 XP + $100)</div>
+                                    <div class="font-semibold text-xs">Fichas de Bocarroña</div>
+                                    <div class="text-[10px] text-hunt-gold">100 BP/ficha (400 XP + $100)</div>
                                 </div>
                                 <div class="flex items-center gap-2">
                                     <button onclick="changeVal('tokenRotjaw', -1)" class="btn-counter w-7 h-7 rounded bg-hunt-border font-bold text-xs">-</button>
@@ -430,12 +504,12 @@
 
                         <!-- 2 Bosses Tokens with Sizes -->
                         <div class="bg-hunt-card p-3 rounded border border-hunt-border space-y-2">
-                            <span class="font-semibold text-xs block text-hunt-gold">Fichas de Partida de 2 Jefes (según tamaño):</span>
+                            <span class="font-semibold text-xs block text-hunt-gold">Fichas de partida de 2 jefes (según tamaño):</span>
                             <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
                                 <div class="flex justify-between items-center bg-black/40 p-2 rounded">
                                     <div>
                                         <div class="text-[11px]">Menor</div>
-                                        <div class="text-[9px] text-hunt-muted">75 BP (300 XP + $75)</div>
+                                        <div class="text-[9px] text-hunt-gold">75 BP (300 XP + $75)</div>
                                     </div>
                                     <div class="flex items-center gap-1">
                                         <button onclick="changeVal('tokenSmall', -1)" class="btn-counter w-6 h-6 rounded bg-hunt-border font-bold text-xs">-</button>
@@ -447,7 +521,7 @@
                                 <div class="flex justify-between items-center bg-black/40 p-2 rounded">
                                     <div>
                                         <div class="text-[11px]">Igual</div>
-                                        <div class="text-[9px] text-hunt-muted">100 BP (400 XP + $100)</div>
+                                        <div class="text-[9px] text-hunt-gold">100 BP (400 XP + $100)</div>
                                     </div>
                                     <div class="flex items-center gap-1">
                                         <button onclick="changeVal('tokenEqual', -1)" class="btn-counter w-6 h-6 rounded bg-hunt-border font-bold text-xs">-</button>
@@ -459,7 +533,7 @@
                                 <div class="flex justify-between items-center bg-black/40 p-2 rounded">
                                     <div>
                                         <div class="text-[11px]">Mayor</div>
-                                        <div class="text-[9px] text-hunt-muted">125 BP (600 XP + $125)</div>
+                                        <div class="text-[9px] text-hunt-gold">125 BP (600 XP + $125)</div>
                                     </div>
                                     <div class="flex items-center gap-1">
                                         <button onclick="changeVal('tokenBig', -1)" class="btn-counter w-6 h-6 rounded bg-hunt-border font-bold text-xs">-</button>
@@ -473,8 +547,8 @@
                         <!-- Extraction Time Bonus -->
                         <div class="bg-hunt-card p-3 rounded border border-hunt-border flex justify-between items-center">
                             <div>
-                                <div class="font-semibold text-xs">Minutos Restantes al Extraer</div>
-                                <div class="text-[10px] text-hunt-muted">4 BP / min (16 XP + $4 por minuto, Máx. 45 min)</div>
+                                <div class="font-semibold text-xs">Minutos restantes al extraer</div>
+                                <div class="text-[10px] text-hunt-gold">4 BP / min (16 XP + $4 por minuto, Máx. 45 min)</div>
                             </div>
                             <div class="flex items-center gap-2">
                                 <input type="number" id="timeBonusMin" value="0" min="0" max="45" onchange="calculateAll()" class="w-14 text-center bg-black/60 border border-hunt-border rounded py-1 font-bold text-xs text-hunt-gold">
@@ -486,7 +560,7 @@
             </div>
 
             <!-- MODE 2: SOUL SURVIVOR CONTROLS -->
-            <div id="soulSurvivorControls" class="space-y-6 hidden">
+            <div id="soulSurvivorControls" class="space-y-4 hidden">
                 <section class="hunt-box rounded-lg overflow-hidden">
                     <div class="hunt-card-header p-4 flex items-center justify-between">
                         <h2 class="font-cinzel text-lg md:text-xl font-bold text-hunt-gold flex items-center gap-2">
@@ -505,7 +579,7 @@
 
                         <div class="bg-hunt-card p-3 rounded border border-hunt-border flex justify-between items-center">
                             <div>
-                                <div class="font-semibold text-xs">Grietas Cerradas (Rifts)</div>
+                                <div class="font-semibold text-xs">Grietas cerradas (Rifts)</div>
                                 <div class="text-[10px] text-hunt-muted">25 BP c/u (100 XP + $25)</div>
                             </div>
                             <div class="flex items-center gap-2">
@@ -525,7 +599,7 @@
 
                         <div class="bg-hunt-card p-3 rounded border border-hunt-border flex justify-between items-center">
                             <div>
-                                <div class="font-semibold text-xs">Energía Absorbida (1-450)</div>
+                                <div class="font-semibold text-xs">Energía absorbida (1-450)</div>
                                 <div class="text-[10px] text-hunt-muted">1 BP por energía (4 XP + $1)</div>
                             </div>
                             <input type="number" id="ssEnergy" value="0" min="0" max="450" onchange="calculateAll()" class="w-16 text-center bg-black/60 border border-hunt-border rounded py-1 font-bold text-xs text-hunt-gold">
@@ -535,10 +609,10 @@
             </div>
 
             <!-- COMMON: AI MONSTERS & ENEMIES -->
-            <section class="hunt-box rounded-lg overflow-hidden">
+            <section id="aiSection" class="hunt-box rounded-lg overflow-hidden">
                 <div class="hunt-card-header p-4 flex items-center justify-between">
                     <h2 class="font-cinzel text-lg md:text-xl font-bold text-hunt-gold flex items-center gap-2">
-                        <i class="fa-solid fa-biohazard text-green-600"></i> Enemigos PNJ / Monstruos (IA)
+                        <i class="fa-solid fa-biohazard text-green-600"></i> Monstruos (IA)
                     </h2>
                     <span class="text-xs text-hunt-muted font-mono uppercase">AI Enemies</span>
                 </div>
@@ -546,7 +620,7 @@
                     <div class="bg-hunt-card p-2.5 rounded border border-hunt-border flex flex-col justify-between">
                         <div class="mb-1">
                             <div class="font-semibold text-xs">Grunts & Leeches</div>
-                            <div class="text-[10px] text-hunt-muted">10 XP c/u</div>
+                            <div class="text-[10px] text-hunt-gold">10 XP c/u</div>
                         </div>
                         <div class="flex items-center justify-between">
                             <button onclick="changeVal('aiGrunts', -5)" class="btn-counter w-7 h-7 rounded bg-hunt-border text-[10px] font-bold">-5</button>
@@ -558,7 +632,7 @@
                     <div class="bg-hunt-card p-2.5 rounded border border-hunt-border flex flex-col justify-between">
                         <div class="mb-1">
                             <div class="font-semibold text-xs">Hellhounds & Waterdevils</div>
-                            <div class="text-[10px] text-hunt-muted">20 XP c/u</div>
+                            <div class="text-[10px] text-hunt-gold">20 XP c/u</div>
                         </div>
                         <div class="flex items-center justify-between">
                             <button onclick="changeVal('aiHounds', -1)" class="btn-counter w-7 h-7 rounded bg-hunt-border font-bold text-xs">-</button>
@@ -570,7 +644,7 @@
                     <div class="bg-hunt-card p-2.5 rounded border border-hunt-border flex flex-col justify-between">
                         <div class="mb-1">
                             <div class="font-semibold text-xs">Hives</div>
-                            <div class="text-[10px] text-hunt-muted">30 XP c/u</div>
+                            <div class="text-[10px] text-hunt-gold">30 XP c/u</div>
                         </div>
                         <div class="flex items-center justify-between">
                             <button onclick="changeVal('aiHives', -1)" class="btn-counter w-7 h-7 rounded bg-hunt-border font-bold text-xs">-</button>
@@ -582,7 +656,7 @@
                     <div class="bg-hunt-card p-2.5 rounded border border-hunt-border flex flex-col justify-between">
                         <div class="mb-1">
                             <div class="font-semibold text-xs">Immolators</div>
-                            <div class="text-[10px] text-hunt-muted">50 XP c/u</div>
+                            <div class="text-[10px] text-hunt-gold">50 XP c/u</div>
                         </div>
                         <div class="flex items-center justify-between">
                             <button onclick="changeVal('aiImmolators', -1)" class="btn-counter w-7 h-7 rounded bg-hunt-border font-bold text-xs">-</button>
@@ -594,7 +668,7 @@
                     <div class="bg-hunt-card p-2.5 rounded border border-hunt-border flex flex-col justify-between">
                         <div class="mb-1">
                             <div class="font-semibold text-xs">Armoreds</div>
-                            <div class="text-[10px] text-hunt-muted">60 XP c/u</div>
+                            <div class="text-[10px] text-hunt-gold">60 XP c/u</div>
                         </div>
                         <div class="flex items-center justify-between">
                             <button onclick="changeVal('aiArmoreds', -1)" class="btn-counter w-7 h-7 rounded bg-hunt-border font-bold text-xs">-</button>
@@ -606,7 +680,7 @@
                     <div class="bg-hunt-card p-2.5 rounded border border-hunt-border flex flex-col justify-between">
                         <div class="mb-1">
                             <div class="font-semibold text-xs">Meatheads</div>
-                            <div class="text-[10px] text-hunt-muted">200 XP c/u</div>
+                            <div class="text-[10px] text-hunt-gold">200 XP c/u</div>
                         </div>
                         <div class="flex items-center justify-between">
                             <button onclick="changeVal('aiMeatheads', -1)" class="btn-counter w-7 h-7 rounded bg-hunt-border font-bold text-xs">-</button>
@@ -618,7 +692,7 @@
             </section>
 
             <!-- RESET BUTTON -->
-            <div>
+            <div id="resetSection">
                 <button onclick="resetAll()" class="w-full py-3 bg-hunt-card hover:bg-hunt-red text-hunt-text hover:text-white border border-hunt-border font-cinzel tracking-wider rounded transition font-bold flex items-center justify-center gap-2">
                     <i class="fa-solid fa-rotate-right"></i> Reiniciar Todos los Datos
                 </button>
@@ -626,17 +700,17 @@
         </div>
 
         <!-- RIGHT COLUMN: SUMMARY & TOTALS (4 cols sticky) -->
-        <div class="lg:col-span-4">
-            <div class="hunt-box rounded-lg p-5 sticky top-6 space-y-5">
+        <div class="md:col-span-3">
+            <div class="hunt-box rounded-lg p-4 sticky top-3 space-y-4">
                 <h2 class="font-cinzel text-xl font-bold text-hunt-gold border-b border-hunt-border pb-3 flex items-center justify-between">
-                    <span>Recompensas Partida</span>
+                    <span>Recompensas de partida</span>
                     <i class="fa-solid fa-scroll"></i>
                 </h2>
 
                 <!-- TOTAL XP & HUNT DOLLARS DISPLAY -->
                 <div class="grid grid-cols-2 gap-3">
                     <div class="text-center bg-black/60 p-3 rounded border border-hunt-borderHighlight">
-                        <span class="text-[10px] font-mono text-hunt-muted uppercase tracking-wider block mb-1">XP Total Ganada</span>
+                        <span class="text-[10px] font-mono text-hunt-muted uppercase tracking-wider block mb-1">XP total ganada</span>
                         <div id="totalXPDisplay" class="text-2xl md:text-3xl font-extrabold font-cinzel text-hunt-gold">0</div>
                     </div>
                     <div class="text-center bg-black/60 p-3 rounded border border-hunt-borderHighlight">
@@ -647,13 +721,13 @@
 
                 <!-- HUNTER LEVEL RESULT BADGE -->
                 <div class="bg-gradient-to-r from-hunt-card via-black/80 to-hunt-card p-3 rounded border border-hunt-gold/50 text-center">
-                    <span class="text-[10px] font-mono text-hunt-muted uppercase tracking-wider block">Nivel de Cazador Alcanzado</span>
+                    <span class="text-[10px] font-mono text-hunt-muted uppercase tracking-wider block">Nivel de cazador alcanzado</span>
                     <div id="hunterFinalLevelBadge" class="text-xl font-bold font-cinzel text-hunt-gold mt-1">Nivel 1</div>
                 </div>
 
                 <!-- BOUNTY POINTS SUMMARY -->
                 <div class="bg-hunt-card p-3 rounded border border-hunt-border flex justify-between items-center">
-                    <span class="text-xs font-semibold">Bounty Points (BP) Totales:</span>
+                    <span class="text-xs font-semibold">Bounty Points (BP) totales:</span>
                     <span id="totalBPDisplay" class="font-mono font-bold text-hunt-gold text-sm">0 BP</span>
                 </div>
 
@@ -661,19 +735,19 @@
                 <div class="space-y-2 text-xs border-b border-hunt-border pb-4">
                     <div class="font-semibold text-hunt-gold mb-1 font-cinzel">Desglose de XP:</div>
                     <div class="flex justify-between text-hunt-muted">
-                        <span>Cazadores Enemigos:</span>
+                        <span>Cazadores enemigos:</span>
                         <span id="bgHuntersXP" class="font-mono text-hunt-text">0 XP</span>
                     </div>
                     <div class="flex justify-between text-hunt-muted">
-                        <span>Acciones de Equipo/Compañero:</span>
+                        <span>Acciones de equipo/compañero:</span>
                         <span id="bgTeamXP" class="font-mono text-hunt-text">0 XP</span>
                     </div>
                     <div class="flex justify-between text-hunt-muted">
-                        <span>Objetivos / Pistas / Recompensas:</span>
+                        <span>Objetivos / pistas / recompensas:</span>
                         <span id="bgObjectivesXP" class="font-mono text-hunt-text">0 XP</span>
                     </div>
                     <div class="flex justify-between text-hunt-muted">
-                        <span>Sobres del Mapa:</span>
+                        <span>Sobres del mapa:</span>
                         <span id="bgEnvelopesXP" class="font-mono text-hunt-text">0 XP</span>
                     </div>
                     <div class="flex justify-between text-hunt-muted">
@@ -684,7 +758,7 @@
 
                 <!-- FORMULA FOOTNOTE -->
                 <div class="bg-black/40 p-3 rounded text-[11px] text-hunt-muted border border-hunt-border/50 space-y-1">
-                    <div class="font-bold text-hunt-text"><i class="fa-solid fa-circle-info text-hunt-gold"></i> Regla de Conversión:</div>
+                    <div class="font-bold text-hunt-text"><i class="fa-solid fa-circle-info text-hunt-gold"></i> Regla de conversión:</div>
                     <p>Cada <strong>1 Bounty Point</strong> equivale exactamente a <strong>4 XP</strong> y <strong>$1 Hunt Dollar</strong>.</p>
                 </div>
             </div>
@@ -697,66 +771,66 @@
         let currentLanguage = 'es';
 
         const languageText = {
-            'Calculadora de XP, Progresión de Niveles y Hunt Dollars (1 BP = 4 XP + $1 HD)': 'XP, Level Progression and Hunt Dollars Calculator (1 BP = 4 XP + $1 HD)',
+            'Calculadora de XP, Progresión de Niveles y Hunt Dollars': 'XP, Level Progression and Hunt Dollars Calculator',
             'Idioma / Language:': 'Language:',
             'Bounty Hunt': 'Bounty Hunt',
             'Soul Survivor': 'Soul Survivor',
-            'Progreso de Nivel del Cazador': 'Hunter Level Progression',
+            'Progreso de nivel del cazador': 'Hunter level progression',
             'Hunter Leveling': 'Hunter Leveling',
-            'Nivel Inicial antes de la Partida:': 'Starting Level Before Match:',
+            'Nivel inicial antes de la partida:': 'Starting level before match:',
             'Nivel:': 'Level:',
             'Proyección:': 'Projection:',
-            'Falta para Nivel 50:': 'Remaining to Level 50:',
-            'Progreso al Nivel 50 (21,100 XP Total)': 'Progress to Level 50 (21,100 Total XP)',
-            'Tabla de Requisitos de XP por Nivel:': 'XP Requirements by Level:',
-            'Sobres de XP del Mapa (Envelopes)': 'Map XP Envelopes',
-            'Map Collectibles': 'Map Collectibles',
-            'Sobre de XP Gratuito': 'Free XP Envelope',
-            'Sobre de Evento / Marcas de cazador': 'Event Envelope / Pledge Marks',
+            'Falta para nivel 50:': 'Remaining to level 50:',
+            'Progreso al nivel 50 (21,100 XP total)': 'Progress to level 50 (21,100 total XP)',
+            'Tabla de requisitos de XP por Nivel:': 'XP requirements by level:',
+            'Sobres de XP del mapa': 'Map XP envelopes',
+            'Coleccionables': 'Map Collectibles',
+            'Sobre de XP gratuito': 'Free XP envelope',
+            'Sobre con marcas de cazador': 'Envelope with pledge marks',
             '+500 XP cada uno': '+500 XP each',
             '+2,000 XP cada uno': '+2,000 XP each',
-            'Cazadores Enemigos & Equipo': 'Enemy Hunters & Team',
-            'Hunter Kills': 'Hunter Kills',
+            'Cazadores enemigos & equipo': 'Enemy hunters & team',
+            'Bajas': 'Kills',
             'Cazador 1★': 'Hunter 1★',
             'Cazador 2★': 'Hunter 2★',
             'Cazador 3★': 'Hunter 3★',
             'Cazador 4★': 'Hunter 4★',
             'Cazador 5★': 'Hunter 5★',
             'Cazador 6★': 'Hunter 6★',
-            'Revivir compañero': 'Revive Teammate',
+            'Revivir compañero': 'Revive teammate',
             'Matar compañero (TK)': 'Kill Teammate (TK)',
-            'Pistas y Guaridas de Jefes': 'Clues & Boss Lairs',
+            'Pistas y guaridas de jefes': 'Clues & boss lairs',
             'Investigation': 'Investigation',
-            'Pista recogida (Clue)': 'Collected Clue',
-            'Guarida Localizada (Lair)': 'Located Lair',
-            'Jefe Derrotado (Boss Kill)': 'Boss Defeated',
-            'Banish de Jefe': 'Boss Banish',
+            'Pista recogida': 'Collected Clue',
+            'Guarida localizada': 'Located lair',
+            'Jefe derrotado': 'Boss defeated',
+            'Desterrar jefe': 'Boss banish',
             'Clean Sweep (Kill/Banish/Extract)': 'Clean Sweep (Kill/Banish/Extract)',
-            'Solo Boss Kill Bonus': 'Solo Boss Kill Bonus',
-            'Extracción de Fichas (Bounty Tokens)': 'Bounty Token Extraction',
-            'Tokens Extracted': 'Tokens Extracted',
-            'Fichas de 1 Jefe (Match)': '1-Boss Match Tokens',
-            'Fichas de Bocarrucha': 'Rotjaw Tokens',
+            'Bonus por derrotar al jefe en solitario': 'Solo boss kill bonus',
+            'Extracción de Fichas': 'Bounty token extraction',
+            'Tokens Extracted': 'Tokens extracted',
+            'Fichas de 1 jefe': '1-Boss match tokens',
+            'Fichas de Bocarroña': 'Rotjaw tokens',
             '150 BP/ficha (600 XP + $150)': '150 BP/token (600 XP + $150)',
             '100 BP/ficha (400 XP + $100)': '100 BP/token (400 XP + $100)',
-            'Fichas de Partida de 2 Jefes (según tamaño):': '2-Boss Match Tokens (by size):',
+            'Fichas de partida de 2 jefes (según tamaño):': '2-Boss match tokens (by size):',
             'Menor': 'Smaller',
             'Igual': 'Equal',
             'Mayor': 'Larger',
-            'Bonus de Tiempo (Máximo 45 min)': 'Time Bonus (Maximum 45 min)',
-            'Minutos en Partida:': 'Minutes in Match:',
-            'Minutos Restantes al Extraer': 'Minutes Remaining at Extraction',
+            'Bonus de Tiempo (Máximo 45 min)': 'Time bonus (maximum 45 min)',
+            'Minutos en Partida:': 'Minutes in match:',
+            'Minutos restantes al extraer': 'Minutes remaining at extraction',
             '4 BP / min (16 XP + $4 por minuto, Máx. 45 min)': '4 BP / min (16 XP + $4 per minute, Max. 45 min)',
             'min': 'min',
             'Eventos de Soul Survivor': 'Soul Survivor Events',
             'Quickplay': 'Quickplay',
             'Bad Luck (Primero en morir)': 'Bad Luck (First to Die)',
-            'Grietas Cerradas (Rifts)': 'Closed Rifts',
+            'Grietas cerradas (Rifts)': 'Closed rifts',
             '25 BP c/u (100 XP + $25)': '25 BP each (100 XP + $25)',
             'Activación de Wellspring': 'Wellspring Activation',
             'Energía Absorbida (1-450)': 'Energy Absorbed (1-450)',
             '1 BP por energía (4 XP + $1)': '1 BP per energy (4 XP + $1)',
-            'Enemigos PNJ / Monstruos (IA)': 'AI Enemies / Monsters',
+            'Monstruos (IA)': 'AI Monsters',
             'AI Enemies': 'AI Enemies',
             'Grunts & Leeches': 'Grunts & Leeches',
             'Hellhounds & Waterdevils': 'Hellhounds & Water Devils',
@@ -767,24 +841,24 @@
             '60 XP c/u': '60 XP each',
             '200 XP c/u': '200 XP each',
             'Reiniciar Todos los Datos': 'Reset All Data',
-            'Recompensas Partida': 'Match Rewards',
-            'XP Total Ganada': 'Total XP Earned',
-            'Nivel de Cazador Alcanzado': 'Hunter Level Reached',
-            'Bounty Points (BP) Totales:': 'Total Bounty Points (BP):',
+            'Recompensas de partida': 'Match rewards',
+            'XP total ganada': 'Total XP earned',
+            'Nivel de cazador alcanzado': 'Hunter level reached',
+            'Bounty Points (BP) totales:': 'Total Bounty Points (BP):',
             'Desglose de XP:': 'XP Breakdown:',
-            'Cazadores Enemigos:': 'Enemy Hunters:',
-            'Acciones de Equipo/Compañero:': 'Team/Teammate Actions:',
-            'Objetivos / Pistas / Recompensas:': 'Objectives / Clues / Rewards:',
-            'Sobres del Mapa:': 'Map Envelopes:',
+            'Cazadores enemigos:': 'Enemy hunters:',
+            'Acciones de equipo/compañero:': 'Team/teammate actions:',
+            'Objetivos / pistas / recompensas:': 'Objectives / clues / rewards:',
+            'Sobres del mapa:': 'Map envelopes:',
             'Monstruos (IA):': 'AI Monsters:',
-            'Regla de Conversión:': 'Conversion Rule:',
+            'Regla de conversión:': 'Conversion rule:',
             'Cada 1 Bounty Point equivale exactamente a 4 XP y $1 Hunt Dollar.': 'Each 1 Bounty Point equals exactly 4 XP and $1 Hunt Dollar.',
             'Hunter Leveling': 'Hunter Leveling',
             'Lvl': 'Lvl'
         };
 
         const englishToSpanish = {
-            'XP, Level Progression and Hunt Dollars Calculator (1 BP = 4 XP + $1 HD)': 'Calculadora de XP, Progresión de Niveles y Hunt Dollars (1 BP = 4 XP + $1 HD)',
+            'XP, Level Progression and Hunt Dollars Calculator': 'Calculadora de XP, Progresión de Niveles y Hunt Dollars',
             'Language:': 'Idioma:',
             'Hunter Level Progression': 'Progreso de Nivel del Cazador',
             'Starting Level Before Match:': 'Nivel Inicial antes de la Partida:',
@@ -793,14 +867,15 @@
             'Remaining to Level 50:': 'Falta para Nivel 50:',
             'Progress to Level 50 (21,100 Total XP)': 'Progreso al Nivel 50 (21,100 XP Total)',
             'XP Requirements by Level:': 'Tabla de Requisitos de XP por Nivel:',
-            'Map XP Envelopes': 'Sobres de XP del Mapa (Envelopes)',
+            'Map Collectibles': 'Coleccionables',
+            'Map XP Envelopes': 'Sobres de XP del Mapa',
             'Hunter Leveling': 'Progresión del Cazador',
             'Investigation': 'Investigación',
             'Tokens Extracted': 'Fichas Extraídas',
             'Quickplay': 'Partida Rápida',
             'AI Enemies': 'Enemigos IA',
             'Free XP Envelope': 'Sobre de XP Gratuito',
-            'Event Envelope / Pledge Marks': 'Sobre de Evento / Marcas de cazador',
+            'Envelope with pledge marks': 'Sobre con marcas de cazador',
             '+500 XP each': '+500 XP cada uno',
             '+2,000 XP each': '+2,000 XP cada uno',
             '10 XP each': '10 XP c/u',
@@ -810,13 +885,14 @@
             '60 XP each': '60 XP c/u',
             '200 XP each': '200 XP c/u',
             'Enemy Hunters & Team': 'Cazadores Enemigos & Equipo',
+            'Kills': 'Bajas',
             'Revive Teammate': 'Revivir compañero',
             'Kill Teammate (TK)': 'Matar compañero (TK)',
             'Clues & Boss Lairs': 'Pistas y Guaridas de Jefes',
-            'Collected Clue': 'Pista recogida (Clue)',
-            'Located Lair': 'Guarida Localizada (Lair)',
-            'Boss Defeated': 'Jefe Derrotado (Boss Kill)',
-            'Boss Banish': 'Banish de Jefe',
+            'Collected Clue': 'Pista recogida',
+            'Located Lair': 'Guarida Localizada',
+            'Boss Defeated': 'Jefe Derrotado',
+            'Boss banish': 'Desterrar jefe',
             '2-Boss Match Tokens (by size):': 'Fichas de Partida de 2 Jefes (según tamaño):',
             '150 BP/token (600 XP + $150)': '150 BP/ficha (600 XP + $150)',
             '100 BP/token (400 XP + $100)': '100 BP/ficha (400 XP + $100)',
@@ -833,7 +909,7 @@
             'Wellspring Activation': 'Activación de Wellspring',
             'Energy Absorbed (1-450)': 'Energía Absorbida (1-450)',
             '1 BP per energy (4 XP + $1)': '1 BP por energía (4 XP + $1)',
-            'AI Enemies / Monsters': 'Enemigos PNJ / Monstruos (IA)',
+            'AI Monsters': 'Monstruos (IA)',
             'Reset All Data': 'Reiniciar Todos los Datos',
             'Match Rewards': 'Recompensas Partida',
             'Total XP Earned': 'XP Total Ganada',
